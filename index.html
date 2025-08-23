@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,6 +38,8 @@
       z-index: 0;
       overflow: hidden;
       display: inline-block;
+      width: 100%;
+      box-sizing: border-box;
     }
     .rainbow-box::before {
       content: "";
@@ -71,9 +74,9 @@
 
     .buttons {
       display: flex;
-      gap: 20px;
-      justify-content: center;
-      flex-wrap: wrap;
+      flex-direction: column; /* stack vertically */
+      gap: 20px;              /* space between buttons */
+      align-items: stretch;   /* stretch all buttons equally */
     }
 
     a {
@@ -85,6 +88,9 @@
       font-size: 1.2rem;
       font-weight: bold;
       transition: transform 0.2s, box-shadow 0.2s;
+      display: block;
+      width: 100%;             /* all same width */
+      box-sizing: border-box;
     }
     a:hover {
       transform: translateY(-3px);
@@ -112,3 +118,4 @@
   </div>
 </body>
 </html>
+
