@@ -29,19 +29,44 @@
       100% { background-position: 0% 50%; }
     }
 
+    /* Wrapper with animated rainbow border */
+    .rainbow-box {
+      position: relative;
+      padding: 20px;
+      border-radius: 16px;
+      z-index: 0;
+      overflow: hidden;
+      display: inline-block;
+    }
+    .rainbow-box::before {
+      content: "";
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      border-radius: 18px;
+      background: linear-gradient(270deg, red, orange, yellow, green, cyan, blue, violet, red);
+      background-size: 400% 400%;
+      animation: rainbowBorder 8s linear infinite;
+      z-index: -2;
+    }
+    .rainbow-box::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      right: 3px;
+      bottom: 3px;
+      border-radius: 12px;
+      background: #0f2027;
+      z-index: -1;
+    }
+
     h1 {
       font-size: 2.5rem;
       margin-bottom: 1.5rem;
       letter-spacing: 1px;
-      position: relative;
-      display: inline-block;
-      padding: 10px 20px;
-      border-radius: 10px;
-      background: linear-gradient(270deg, red, orange, yellow, green, cyan, blue, violet, red);
-      background-size: 400% 400%;
-      animation: rainbowBorder 8s linear infinite;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
 
     .buttons {
@@ -53,42 +78,17 @@
 
     a {
       text-decoration: none;
-      color: white;
+      background: #22d3ee;
+      color: #0f2027;
       padding: 15px 30px;
-      border-radius: 12px;
+      border-radius: 8px;
       font-size: 1.2rem;
       font-weight: bold;
-      position: relative;
-      overflow: hidden;
-      z-index: 0;
-    }
-    a::before {
-      content: "";
-      position: absolute;
-      top: -2px;
-      left: -2px;
-      right: -2px;
-      bottom: -2px;
-      background: linear-gradient(270deg, red, orange, yellow, green, cyan, blue, violet, red);
-      background-size: 400% 400%;
-      border-radius: 12px;
-      z-index: -1;
-      animation: rainbowBorder 6s linear infinite;
-    }
-    a::after {
-      content: "";
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      right: 3px;
-      bottom: 3px;
-      background: #0f2027;
-      border-radius: 8px;
-      z-index: -1;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
     a:hover {
       transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 5px 15px rgba(34, 211, 238, 0.4);
     }
 
     footer {
@@ -100,14 +100,15 @@
 </head>
 <body>
   <div class="container">
-    <h1>Welcome to VCSLand</h1>
-    <div class="buttons">
-      <a href="https://calculator.vcsland.com">Mortgage Calculator</a>
-      <a href="https://moji.vcsland.com">Moji Blaster</a>
-      <a href="https://algebra.vcsland.com">Algebra Tutor</a>
+    <div class="rainbow-box">
+      <h1>Welcome to VCSLand</h1>
+      <div class="buttons">
+        <a href="https://calculator.vcsland.com">Mortgage Calculator</a>
+        <a href="https://moji.vcsland.com">Moji Blaster</a>
+        <a href="https://algebra.vcsland.com">Algebra Tutor</a>
+      </div>
     </div>
     <footer>© 2025 VCS Capital Properties. All rights reserved.</footer>
   </div>
 </body>
 </html>
-
