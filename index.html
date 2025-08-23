@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,72 +10,92 @@
       margin: 0;
       font-family: system-ui, Arial, sans-serif;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       color: white;
       text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
+
     .container {
       max-width: 600px;
-      padding: 20px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    /* Rainbow gradient animation */
-    @keyframes rainbowBorder {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    /* Animatable custom property for the gradient angle */
+    @property --angle {
+      syntax: "<angle>";
+      initial-value: 0deg;
+      inherits: false;
     }
 
-    /* Wrapper with animated rainbow border */
     .rainbow-box {
       position: relative;
-      padding: 20px;
+      padding: 30px 20px 70px 20px; /* top | right | bottom | left */
       border-radius: 16px;
       z-index: 0;
       overflow: hidden;
-      display: inline-block;
-      width: 100%;
+      width: 80vw;
       box-sizing: border-box;
+      background: #111; /* solid interior so only edges glow */
     }
+
+    /* Edge-only animated conic gradient + glow */
+    .rainbow-box::after,
     .rainbow-box::before {
-      content: "";
+      content: '';
       position: absolute;
-      top: -3px;
-      left: -3px;
-      right: -3px;
-      bottom: -3px;
-      border-radius: 18px;
-      background: linear-gradient(270deg, red, orange, yellow, green, cyan, blue, violet, red);
-      background-size: 400% 400%;
-      animation: rainbowBorder 8s linear infinite;
-      z-index: -2;
+      inset: 0;
+      padding: 4px;                 /* border thickness */
+      border-radius: inherit;
+      /* Smooth ROYGBIV (equal 1/7 slices) with seamless wrap to red */
+      background-image: conic-gradient(
+        from var(--angle),
+        red 0deg,
+        #ff7f00 51.43deg,            /* orange */
+        yellow 102.86deg,
+        #00ff00 154.29deg,           /* green */
+        #007fff 205.71deg,           /* blue */
+        indigo 257.14deg,
+        violet 308.57deg,
+        red 360deg
+      );
+      /* Mask out the center so only the edges show */
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      animation: spin 6s linear infinite;
     }
-    .rainbow-box::after {
-      content: "";
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      right: 3px;
-      bottom: 3px;
-      border-radius: 12px;
-      background: #0f2027;
-      z-index: -1;
+
+    /* Soft outer glow */
+    .rainbow-box::before {
+      filter: blur(0.7rem);
+      opacity: 0.6;
+    }
+
+    @keyframes spin {
+      from { --angle: 0deg; }
+      to   { --angle: 360deg; }
     }
 
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1.5rem;
+      font-size: 4rem;
+      margin: 0 0 80px 0;
       letter-spacing: 1px;
     }
 
     .buttons {
       display: flex;
-      flex-direction: column; /* stack vertically */
-      gap: 20px;              /* space between buttons */
-      align-items: stretch;   /* stretch all buttons equally */
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
     }
 
     a {
@@ -89,7 +108,7 @@
       font-weight: bold;
       transition: transform 0.2s, box-shadow 0.2s;
       display: block;
-      width: 100%;             /* all same width */
+      width: 80%;
       box-sizing: border-box;
     }
     a:hover {
@@ -98,7 +117,7 @@
     }
 
     footer {
-      margin-top: 2rem;
+      margin: 2rem 0;
       font-size: 0.85rem;
       opacity: 0.7;
     }
@@ -107,7 +126,7 @@
 <body>
   <div class="container">
     <div class="rainbow-box">
-      <h1>Welcome to VCSLand</h1>
+      <h1>VCS Land</h1>
       <div class="buttons">
         <a href="https://calculator.vcsland.com">Mortgage Calculator</a>
         <a href="https://moji.vcsland.com">Moji Blaster</a>
@@ -118,4 +137,3 @@
   </div>
 </body>
 </html>
-
