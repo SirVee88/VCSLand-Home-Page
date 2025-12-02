@@ -1,145 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>** VCSLand **</title>
+<meta charset="UTF-8" />
+<title>** VCS LAND **</title>
+<style>
+  :root {
+    /* Rainbow frame */
+    --border-width: 12px;
+    --border-radius: 36px;
 
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, Arial, sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: white;
-      text-align: center;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+    /* Spin duration for the rainbow */
+    --spin-duration: 4s;
+
+    /* Neumorphic button variables */
+    --bg-color: #e0e5ec;
+    --text-color: #4a4a4a;
+    --shadow-light: #ffffff;
+    --shadow-dark: #a3b1c6;
+    --accent-color: #6d5dfc;
+  }
+
+  footer {
+    margin-top: 24px;
+    font-size: 0.85rem;
+    opacity: 0.7;
+  }
+  
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;      /* Stack rainbow box and footer vertically */
+    align-items: center;
+    justify-content: center;
+    background: #111;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: #fff;
+  }
+
+  /* Make the gradient angle animatable so only COLORS spin */
+  @property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  .rainbow-border {
+    position: relative;
+    padding: var(--border-width);   /* thickness of the border */
+    border-radius: var(--border-radius);
+    overflow: visible;
+  }
+
+  /* Main sharp rainbow border */
+  .rainbow-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: conic-gradient(
+      from var(--angle),
+      red,
+      orange,
+      yellow,
+      lime,
+      cyan,
+      blue,
+      magenta,
+      red
+    );
+    animation: spin var(--spin-duration) linear infinite;
+    z-index: -1; /* behind the black box */
+  }
+
+  /* Strong glowing halo behind the rainbow */
+  .rainbow-border::after {
+    content: "";
+    position: absolute;
+    inset: -14px; /* extend outwards for glow */
+    border-radius: inherit;
+    background: conic-gradient(
+      from var(--angle),
+      red,
+      orange,
+      yellow,
+      lime,
+      cyan,
+      blue,
+      magenta,
+      red
+    );
+    filter: blur(40px);
+    opacity: 0.3;
+    animation: spin var(--spin-duration) linear infinite;
+    z-index: -2; /* further behind */
+
+    /* Fade out before the element's edges so corners don't show as a box */
+    -webkit-mask: radial-gradient(circle at center,
+      rgba(0,0,0,1) 0%,
+      rgba(0,0,0,1) 55%,
+      rgba(0,0,0,0) 100%
+    );
+    mask: radial-gradient(circle at center,
+      rgba(0,0,0,1) 0%,
+      rgba(0,0,0,1) 55%,
+      rgba(0,0,0,0) 100%
+    );
+  }
+
+  .rainbow-inner {
+    position: relative;
+    border-radius: calc(var(--border-radius) - var(--border-width));
+    background: #000;
+    padding: 40px 60px;
+    text-align: center;
+
+    /* Make box responsive: grows with window, max width cap */
+    width: min(85vw, 600px);
+    box-sizing: border-box;
+    margin: 0 auto;
+
+    /* NEW: make children (h1 + button-stack) share the same horizontal center */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  @keyframes spin {
+    to {
+      --angle: 360deg;
     }
+  }
 
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 40px 20px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  /* ------------------------------------------------ */
+  /*        NEUMORPHIC BUTTON BASE STYLE              */
+  /* ------------------------------------------------ */
+  button,
+  .btn-convex {
+    border: none;
+    outline: none;
+    background: var(--bg-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #ffffff;           /* base color, overridden below */
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
 
-    /* Animatable custom property for the gradient angle */
-    @property --angle {
-      syntax: "<angle>";
-      initial-value: 0deg;
-      inherits: false;
-    }
+  /* Container for stacked buttons */
+  .button-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;       /* stretch children to same width */
+    gap: 26px;                 /* spacing between buttons */
+    margin-top: 32px;
 
-    .rainbow-box {
-      position: relative;
-      padding: 30px 20px 70px 20px; /* top | right | bottom | left */
-      border-radius: 16px;
-      z-index: 0;
-      overflow: hidden;
-      width: 80vw;
-      box-sizing: border-box;
-      background: #111; /* solid interior so only edges glow */
-    }
+    /* Center the whole stack and limit its width */
+    width: 100%;
+    max-width: 320px;
+  }
 
-    /* Edge-only animated conic gradient + glow */
-    .rainbow-box::after,
-    .rainbow-box::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      padding: 16px;                 /* border thickness */
-      border-radius: inherit;
-      /* Smooth ROYGBIV (equal 1/7 slices) with seamless wrap to red */
-      background-image: conic-gradient(
-        from var(--angle),
-        red 0deg,
-        #ff7f00 51.43deg,            /* orange */
-        yellow 102.86deg,
-        #00ff00 154.29deg,           /* green */
-        #007fff 205.71deg,           /* blue */
-        indigo 257.14deg,
-        violet 308.57deg,
-        red 360deg
-      );
-      /* Mask out the center so only the edges show */
-      -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-              mask-composite: exclude;
+  /* ------------------------------------------------ */
+  /*       CONVEX (STANDARD RAISED) BUTTON            */
+  /* ------------------------------------------------ */
+  .btn-convex {
+    padding: 12px 24px;
+    border-radius: 30px;
 
-      /* ✨ Critical fix: let clicks pass through the overlay */
-      pointer-events: none;
+    /* Neumorphic shadows */
+    box-shadow:
+      9px 9px 16px var(--shadow-dark),
+      -9px -9px 16px var(--shadow-light);
 
-      animation: spin 6s linear infinite;
-    }
+    text-decoration: none;   /* remove underline from <a href> */
 
-    /* Soft outer glow */
-    .rainbow-box::before {
-      filter: blur(0.7rem);
-      opacity: 0.6;
-    }
+    /* Button text should be BLACK */
+    color: #000;
 
-    @keyframes spin {
-      from { --angle: 0deg; }
-      to   { --angle: 360deg; }
-    }
+    display: block;          /* full-width block inside stack */
+    width: 100%;             /* same width for all buttons */
+    text-align: center;      /* center button label */
+  }
 
-    h1 {
-      font-size: 4rem;
-      margin: 0 0 80px 0;
-      letter-spacing: 1px;
-    }
-
-    .buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      align-items: center;
-    }
-
-    a {
-      text-decoration: none;
-      background: #2c5364;
-      color: white;
-      padding: 15px 30px;
-      border-radius: 8px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      transition: transform 0.2s, box-shadow 0.2s;
-      display: block;
-      width: 80%;
-      box-sizing: border-box;
-    }
-    a:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(34, 211, 238, 0.4);
-    }
-
-    footer {
-      margin: 2rem 0;
-      font-size: 0.85rem;
-      opacity: 0.7;
-    }
-  </style>
+  .btn-convex:active {
+    box-shadow:
+      inset 6px 6px 10px var(--shadow-dark),
+      inset -6px -6px 10px var(--shadow-light);
+    transform: scale(0.98);
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="rainbow-box">
-      <h1>VCS Land</h1>
-      <div class="buttons">
-        <a href="https://calculator.vcsland.com">Mortgage Calculator</a>
-        <a href="https://dividendinthefuture.vcsland.com">Future Dividends</a>
-        <a href="https://moji.vcsland.com">Moji Blaster</a>
-        <a href="https://algebra.vcsland.com">Algebra Tutor</a>
-        <a href="https://buttonpop.vcsland.com">Button POP</a>
-      </div>
+
+<div class="rainbow-border">
+  <div class="rainbow-inner">
+    <h1>VCS LAND</h1>
+
+    <div class="button-stack">
+      <a href="https://calculator.vcsland.com" class="btn-convex">
+        Mortgage Calculator
+      </a>
+      <a href="https://dividendinthefuture.vcsland.com" class="btn-convex">
+        Future Dividends
+      </a>
+      <a href="https://moji.vcsland.com" class="btn-convex">
+        Moji Blaster
+      </a>
+      <a href="https://algebra.vcsland.com" class="btn-convex">
+        Algebra Tutor
+      </a>
+      <a href="https://buttonpop.vcsland.com" class="btn-convex">
+        Button POP
+      </a>
     </div>
-    <footer>© 2025 VCS Capital Properties. All rights reserved.</footer>
   </div>
+</div>
+
+<footer>© 2025 VCS Capital Properties. All rights reserved.</footer>  
+
 </body>
 </html>
