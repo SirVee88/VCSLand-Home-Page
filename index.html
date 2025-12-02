@@ -2,43 +2,50 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>** VCS LAND **</title>
 <style>
   :root {
-    /* Rainbow frame */
+    /* Rainbow frame settings */
     --border-width: 12px;
     --border-radius: 36px;
+    --spin-duration: 8s;
 
-    /* Spin duration for the rainbow */
-    --spin-duration: 4s;
-
-    /* Neumorphic button variables */
-    --bg-color: #e0e5ec;
-    --text-color: #4a4a4a;
-    --shadow-light: #ffffff;
-    --shadow-dark: #a3b1c6;
-    --accent-color: #6d5dfc;
+    /* LIGHT NEUMORPHIC PALETTE */
+    /* This specific grey-blue-white is the "classic" neumorphic base */
+    --bg-color: #e0e5ec;       
+    --text-color: #4a4a4a;     
+    
+    /* Shadows for the 3D effect on light bg */
+    --shadow-light: #ffffff;   /* Top-left highlight (pure white) */
+    --shadow-dark: #a3b1c6;    /* Bottom-right shadow (soft grey) */
+    
+    --accent-color: #6d5dfc;   /* Purple accent for active states */
   }
 
   footer {
-    margin-top: 24px;
+    margin-top: 48px;
     font-size: 0.85rem;
     opacity: 0.7;
+    color: #fff; /* Keep footer white to stand out against the dark body */
   }
   
   body {
     margin: 0;
     min-height: 100vh;
     display: flex;
-    flex-direction: column;      /* Stack rainbow box and footer vertically */
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #111;
+    
+    /* Dark body background helps the rainbow and light card pop */
+    background: #222; 
+    
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    color: #fff;
+    color: var(--text-color);
   }
 
-  /* Make the gradient angle animatable so only COLORS spin */
+  /* Make the gradient angle animatable */
   @property --angle {
     syntax: "<angle>";
     initial-value: 0deg;
@@ -47,9 +54,11 @@
 
   .rainbow-border {
     position: relative;
-    padding: var(--border-width);   /* thickness of the border */
+    padding: var(--border-width);
     border-radius: var(--border-radius);
     overflow: visible;
+    /* Drop shadow behind the entire component */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
   }
 
   /* Main sharp rainbow border */
@@ -60,70 +69,69 @@
     border-radius: inherit;
     background: conic-gradient(
       from var(--angle),
-      red,
-      orange,
-      yellow,
-      lime,
-      cyan,
-      blue,
-      magenta,
-      red
+      #ff0000,
+      #ff7f00,
+      #ffff00,
+      #00ff00,
+      #00ffff,
+      #0000ff,
+      #ff00ff,
+      #ff0000
     );
     animation: spin var(--spin-duration) linear infinite;
-    z-index: -1; /* behind the black box */
+    z-index: -1; 
   }
 
-  /* Strong glowing halo behind the rainbow */
+  /* Glowing halo */
   .rainbow-border::after {
     content: "";
     position: absolute;
-    inset: -14px; /* extend outwards for glow */
+    inset: -14px;
     border-radius: inherit;
     background: conic-gradient(
       from var(--angle),
-      red,
-      orange,
-      yellow,
-      lime,
-      cyan,
-      blue,
-      magenta,
-      red
+      #ff0000,
+      #ff7f00,
+      #ffff00,
+      #00ff00,
+      #00ffff,
+      #0000ff,
+      #ff00ff,
+      #ff0000
     );
     filter: blur(40px);
-    opacity: 0.3;
+    opacity: 0.4;
     animation: spin var(--spin-duration) linear infinite;
-    z-index: -2; /* further behind */
-
-    /* Fade out before the element's edges so corners don't show as a box */
-    -webkit-mask: radial-gradient(circle at center,
-      rgba(0,0,0,1) 0%,
-      rgba(0,0,0,1) 55%,
-      rgba(0,0,0,0) 100%
-    );
-    mask: radial-gradient(circle at center,
-      rgba(0,0,0,1) 0%,
-      rgba(0,0,0,1) 55%,
-      rgba(0,0,0,0) 100%
-    );
+    z-index: -2;
+    
+    /* Mask logic to keep center transparent/dark */
+    -webkit-mask: radial-gradient(circle at center, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 70%);
+    mask: radial-gradient(circle at center, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 70%);
   }
 
   .rainbow-inner {
     position: relative;
     border-radius: calc(var(--border-radius) - var(--border-width));
-    background: #000;
+    
+    /* CRITICAL: Background matches button color for seamless effect */
+    background: var(--bg-color); 
+    
     padding: 40px 60px;
     text-align: center;
-
-    /* Make box responsive: grows with window, max width cap */
     width: min(85vw, 600px);
     box-sizing: border-box;
     margin: 0 auto;
-
-    /* NEW: make children (h1 + button-stack) share the same horizontal center */
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  h1 {
+    color: var(--text-color);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    /* Gentle text shadow for depth */
+    text-shadow: 1px 1px 1px rgba(255,255,255,0.8);
   }
 
   @keyframes spin {
@@ -132,61 +140,71 @@
     }
   }
 
-  /* ------------------------------------------------ */
-  /*        NEUMORPHIC BUTTON BASE STYLE              */
-  /* ------------------------------------------------ */
-  button,
-  .btn-convex {
-    border: none;
-    outline: none;
-    background: var(--bg-color);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: #ffffff;           /* base color, overridden below */
-    font-weight: 600;
-    letter-spacing: 1px;
-  }
-
-  /* Container for stacked buttons */
+  /* ------------------------------------- */
+  /* NEUMORPHIC BUTTON STYLES (LIGHT)      */
+  /* ------------------------------------- */
+  
   .button-stack {
     display: flex;
     flex-direction: column;
-    align-items: stretch;       /* stretch children to same width */
-    gap: 26px;                 /* spacing between buttons */
+    align-items: stretch;
+    gap: 24px;
     margin-top: 32px;
-
-    /* Center the whole stack and limit its width */
     width: 100%;
-    max-width: 320px;
+    max-width: 320px;    
+    /* Nudge left */
+    margin-left: -40px;   /* try -30px / -50px */
   }
 
-  /* ------------------------------------------------ */
-  /*       CONVEX (STANDARD RAISED) BUTTON            */
-  /* ------------------------------------------------ */
   .btn-convex {
-    padding: 12px 24px;
-    border-radius: 30px;
-
-    /* Neumorphic shadows */
-    box-shadow:
-      9px 9px 16px var(--shadow-dark),
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 16px 24px;
+    border-radius: 50px; 
+    
+    /* Neumorphic Background */
+    background: var(--bg-color);
+    color: var(--text-color);
+    
+    /* Typography */
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    text-decoration: none;
+    text-align: center;
+    
+    /* Light Mode Shadows: White highlight top-left, Grey shadow bottom-right */
+    box-shadow: 
+      9px 9px 16px var(--shadow-dark), 
       -9px -9px 16px var(--shadow-light);
-
-    text-decoration: none;   /* remove underline from <a href> */
-
-    /* Button text should be BLACK */
-    color: #000;
-
-    display: block;          /* full-width block inside stack */
-    width: 100%;             /* same width for all buttons */
-    text-align: center;      /* center button label */
+      
+    transition: all 0.25s ease;
+    /* No border needed for light mode neumorphism usually, creates cleaner look */
   }
 
+  /* Hover State: Slight lift */
+  .btn-convex:hover {
+    color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 
+      12px 12px 20px var(--shadow-dark), 
+      -10px -10px 20px var(--shadow-light);
+  }
+
+  /* Active/Pressed State: The "Dent" Effect */
   .btn-convex:active {
-    box-shadow:
-      inset 6px 6px 10px var(--shadow-dark),
+    transform: translateY(0) scale(0.98);
+    box-shadow: 
+      inset 6px 6px 10px var(--shadow-dark), 
       inset -6px -6px 10px var(--shadow-light);
-    transform: scale(0.98);
+  }
+  
+  /* Responsive tweak */
+  @media (max-width: 480px) {
+    .rainbow-inner {
+      padding: 30px 20px;
+    }
   }
 </style>
 </head>
