@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>** VCS Land **</title>
+  <title>** VCSLand **</title>
 
   <style>
     body {
@@ -37,8 +37,9 @@
     .rainbow-box {
       position: relative;
       padding: 30px 20px 70px 20px; /* top | right | bottom | left */
-      border-radius: 28px;
+      border-radius: 16px;
       z-index: 0;
+      overflow: hidden;
       width: 80vw;
       box-sizing: border-box;
       background: #111; /* solid interior so only edges glow */
@@ -50,10 +51,10 @@
       content: '';
       position: absolute;
       inset: 0;
-      padding: 12px;                 /* border thickness */
+      padding: 16px;                 /* border thickness */
       border-radius: inherit;
       /* Smooth ROYGBIV (equal 1/7 slices) with seamless wrap to red */
-      background: conic-gradient(
+      background-image: conic-gradient(
         from var(--angle),
         red 0deg,
         #ff7f00 51.43deg,            /* orange */
@@ -64,12 +65,10 @@
         violet 308.57deg,
         red 360deg
       );
-      
       /* Mask out the center so only the edges show */
       -webkit-mask:
         linear-gradient(#000 0 0) content-box,
         linear-gradient(#000 0 0);
-      -webkit-mask-clip: content-box, border-box;  /* important for Safari/WebKit */
       -webkit-mask-composite: xor;
               mask-composite: exclude;
 
@@ -79,6 +78,11 @@
       animation: spin 6s linear infinite;
     }
 
+    /* Soft outer glow */
+    .rainbow-box::before {
+      filter: blur(0.7rem);
+      opacity: 0.6;
+    }
 
     @keyframes spin {
       from { --angle: 0deg; }
@@ -103,7 +107,7 @@
       background: #2c5364;
       color: white;
       padding: 15px 30px;
-      border-radius: 12px;
+      border-radius: 8px;
       font-size: 1.2rem;
       font-weight: bold;
       transition: transform 0.2s, box-shadow 0.2s;
@@ -117,10 +121,10 @@
     }
 
     footer {
-      margin: 3rem 0;
+      margin: 2rem 0;
       font-size: 0.85rem;
+      opacity: 0.7;
     }
-    
   </style>
 </head>
 <body>
@@ -129,8 +133,10 @@
       <h1>VCS Land</h1>
       <div class="buttons">
         <a href="https://calculator.vcsland.com">Mortgage Calculator</a>
+        <a href="https://dividendinthefuture.vcsland.com">Future Dividends</a>
         <a href="https://moji.vcsland.com">Moji Blaster</a>
         <a href="https://algebra.vcsland.com">Algebra Tutor</a>
+        <a href="https://buttonpop.vcsland.com">Button POP</a>
       </div>
     </div>
     <footer>© 2025 VCS Capital Properties. All rights reserved.</footer>
